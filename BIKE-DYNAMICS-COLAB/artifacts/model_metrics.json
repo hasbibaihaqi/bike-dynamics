@@ -1,0 +1,116 @@
+{
+  "evaluated_at": "2026-11-22T13:24:20",
+  "selection_criterion": "Lowest RMSE and MAE on Chronological Test Split (20% latest observations)",
+  "best_model": "Gradient Boosting Regressor",
+  "best_metrics": {
+    "MAE": 44.2477,
+    "RMSE": 65.6799,
+    "R2": 0.9089,
+    "RMSLE": 0.3812,
+    "Training_Time_Sec": 3.8993
+  },
+  "algorithms": [
+    {
+      "Rank": 1,
+      "Algorithm": "Gradient Boosting Regressor",
+      "MAE": 44.2477,
+      "RMSE": 65.6799,
+      "R2": 0.9089,
+      "RMSLE": 0.3812,
+      "MAPE_NonZero (%)": 32.86,
+      "Training_Time_Sec": 3.8993
+    },
+    {
+      "Rank": 2,
+      "Algorithm": "Random Forest Regressor",
+      "MAE": 54.4776,
+      "RMSE": 83.6138,
+      "R2": 0.8523,
+      "RMSLE": 0.3579,
+      "MAPE_NonZero (%)": 26.9,
+      "Training_Time_Sec": 1.4306
+    },
+    {
+      "Rank": 3,
+      "Algorithm": "Decision Tree Regressor",
+      "MAE": 65.2975,
+      "RMSE": 98.1876,
+      "R2": 0.7964,
+      "RMSLE": 0.4535,
+      "MAPE_NonZero (%)": 33.53,
+      "Training_Time_Sec": 0.1613
+    },
+    {
+      "Rank": 4,
+      "Algorithm": "Linear Regression",
+      "MAE": 89.645,
+      "RMSE": 122.3129,
+      "R2": 0.684,
+      "RMSLE": 1.0106,
+      "MAPE_NonZero (%)": 223.63,
+      "Training_Time_Sec": 0.1339
+    }
+  ],
+  "periodic_performance": {
+    "by_workday": [
+      {
+        "Tipe_Hari": "Akhir Pekan / Libur (0)",
+        "Samples": 715,
+        "Mean_Actual": 247.51,
+        "Mean_Predicted": 230.13,
+        "MAE": 43.66,
+        "RMSE": 63.22
+      },
+      {
+        "Tipe_Hari": "Hari Kerja (1)",
+        "Samples": 1463,
+        "Mean_Actual": 266.51,
+        "Mean_Predicted": 234.37,
+        "MAE": 44.54,
+        "RMSE": 66.85
+      }
+    ],
+    "by_month": [
+      {
+        "year_month": "2012-08",
+        "Samples": 355,
+        "Mean_Actual": 284.54,
+        "Mean_Predicted": 277.89,
+        "MAE": 36.18,
+        "RMSE": 58.25
+      },
+      {
+        "year_month": "2012-09",
+        "Samples": 456,
+        "Mean_Actual": 292.6,
+        "Mean_Predicted": 273.03,
+        "MAE": 44.97,
+        "RMSE": 62.99
+      },
+      {
+        "year_month": "2012-10",
+        "Samples": 456,
+        "Mean_Actual": 280.51,
+        "Mean_Predicted": 242.6,
+        "MAE": 54.93,
+        "RMSE": 81.24
+      },
+      {
+        "year_month": "2012-11",
+        "Samples": 455,
+        "Mean_Actual": 231.98,
+        "Mean_Predicted": 196.73,
+        "MAE": 42.37,
+        "RMSE": 61.52
+      },
+      {
+        "year_month": "2012-12",
+        "Samples": 456,
+        "Mean_Actual": 217.05,
+        "Mean_Predicted": 184.5,
+        "MAE": 41.0,
+        "RMSE": 60.16
+      }
+    ]
+  }
+}

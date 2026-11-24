@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+    <div>
+        <span class="badge text-bg-primary">Run Aktif #{{ latest_run.run_id }}</span>
+        <span class="fw-semibold ms-1">{{ latest_run.run_label }}</span>
+        <span class="text-muted small ms-2">({{ latest_run.summary.simulation_hours }} jam simulasi)</span>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('simulation.simulation_center') }}" class="btn btn-sm btn-primary">
+            <i class="bi bi-play-fill"></i> Simulasi Baru
+        </a>
+        <a href="{{ url_for('simulation.scenario_analysis') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-layers"></i> Bandingkan 4 Skenario
+        </a>
+    </div>
+</div>
+
+<!-- 7 KPI Utama Sesuai Spesifikasi Dashboard -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-4 col-xl-3">
+        <div class="card-modern kpi-card p-3 h-100">
+            <div class="kpi-label">Total Armada</div>
+            <div class="kpi-value">{{ "%.0f"|format(kpi.total_fleet) }} <small class="fs-6 fw-normal text-muted">unit</small></div>
+            <div class="kpi-sub">Kapasitas konservasi tetap</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-3">
+        <div class="card-modern kpi-card emerald p-3 h-100">
+            <div class="kpi-label">Sepeda Tersedia (Akhir / Rata2)</div>
+            <div class="kpi-value">{{ "%.1f"|format(kpi.available_bikes) }}</div>
+            <div class="kpi-sub">Rata-rata: {{ "%.1f"|format(kpi.avg_available_bikes) }} unit</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-3">
+        <div class="card-modern kpi-card teal p-3 h-100">
+            <div class="kpi-label">Sepeda Disewa (Akhir / Rata2)</div>
+            <div class="kpi-value">{{ "%.1f"|format(kpi.rented_bikes) }}</div>
+            <div class="kpi-sub">Rata-rata: {{ "%.1f"|format(kpi.avg_rented_bikes) }} unit</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-3">
+        <div class="card-modern kpi-card amber p-3 h-100">
+            <div class="kpi-label">Sepeda dalam Perawatan</div>
+            <div class="kpi-value">{{ "%.1f"|format(kpi.maintenance_bikes) }}</div>
+            <div class="kpi-sub">Rata-rata: {{ "%.1f"|format(kpi.avg_maintenance_bikes) }} unit</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-4">
+        <div class="card-modern kpi-card indigo p-3 h-100">
+            <div class="kpi-label">Total Permintaan Penyewaan</div>
+            <div class="kpi-value">{{ "%.0f"|format(kpi.total_demand) }}</div>
+            <div class="kpi-sub">Terpenuhi: {{ "%.0f"|format(kpi.total_rentals) }} penyewaan ({{ kpi.service_level_pct }}%)</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-4">
+        <div class="card-modern kpi-card rose p-3 h-100">
+            <div class="kpi-label">Permintaan Tidak Terpenuhi</div>
+            <div class="kpi-value text-danger">{{ "%.1f"|format(kpi.total_unmet_demand) }}</div>
+            <div class="kpi-sub">Unmet Demand akibat stok habis</div>
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-xl-4">
+        <div class="card-modern kpi-card p-3 h-100">
+            <div class="kpi-label">Rata-rata Utilisasi Armada</div>
+            <div class="kpi-value text-primary">{{ kpi.avg_utilization_pct }}%</div>
+            <div class="kpi-sub">Rasio sepeda aktif disewa / total kapasitas</div>
+        </div>
+    </div>
+</div>
+
+<!-- Grafik Dinamika Armada & Permintaan -->
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="card-modern p-3 h-100">
+            <h6 class="fw-bold mb-3"><i class="bi bi-activity text-primary me-1"></i> Dinamika Stock Armada per Jam</h6>
+            <div class="chart-container">
+                <canvas id="dashStockChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card-modern p-3 h-100">
+            <h6 class="fw-bold mb-3"><i class="bi bi-bar-chart-line text-danger me-1"></i> Permintaan vs Penyewaan &amp; Unmet Demand</h6>
+            <div class="chart-container">
+                <canvas id="dashDemandChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const dashSeries = {{ latest_run.timeseries | tojson }};
+const labels = dashSeries.map(r => r.datetime.slice(5, 16));
+
+BikeCharts.createLineChart('dashStockChart', labels, [
+    {
+        label: 'Available Bikes (Ba)',
+        data: dashSeries.map(r => r.available_bikes),
+        borderColor: BikeCharts.palette.teal,
+        backgroundColor: BikeCharts.palette.tealFill,
+        tension: 0.25,
+        pointRadius: 0
+    },
+    {
+        label: 'Rented Bikes (Br)',
+        data: dashSeries.map(r => r.rented_bikes),
+        borderColor: BikeCharts.palette.blue,
+        backgroundColor: BikeCharts.palette.blueFill,
+        tension: 0.25,
+        pointRadius: 0
+    },
+    {
+        label: 'Maintenance Bikes (Bm)',
+        data: dashSeries.map(r => r.maintenance_bikes),
+        borderColor: BikeCharts.palette.amber,
+        tension: 0.25,
+        pointRadius: 0
+    }
+], 'Jumlah Sepeda');
+
+BikeCharts.createLineChart('dashDemandChart', labels, [
+    {
+        label: 'Demand Rate (ML)',
+        data: dashSeries.map(r => r.demand_rate),
+        borderColor: BikeCharts.palette.slate,
+        borderDash: [4, 4],
+        tension: 0.25,
+        pointRadius: 0
+    },
+    {
+        label: 'Rental Rate Aktual',
+        data: dashSeries.map(r => r.rental_rate),
+        borderColor: BikeCharts.palette.blue,
+        tension: 0.25,
+        pointRadius: 0
+    },
+    {
+        label: 'Unmet Demand',
+        data: dashSeries.map(r => r.unmet_demand),
+        borderColor: BikeCharts.palette.rose,
+        backgroundColor: BikeCharts.palette.roseFill,
+        fill: true,
+        tension: 0.25,
+        pointRadius: 0
+    }
+], 'Sepeda / Jam');
+</script>
+{% endblock %}

@@ -1,0 +1,60 @@
+{
+  "source_dataset": "data\\raw\\train.csv",
+  "output_dataset": "data\\processed\\cleaned_data.csv",
+  "num_rows": 10886,
+  "num_columns": 22,
+  "categorical_features": [
+    "season",
+    "weather"
+  ],
+  "numerical_features": [
+    "year",
+    "month",
+    "day",
+    "hour",
+    "dayofweek",
+    "holiday",
+    "workingday",
+    "is_weekend",
+    "is_rush_hour",
+    "hour_sin",
+    "hour_cos",
+    "month_sin",
+    "month_cos",
+    "temp",
+    "atemp",
+    "humidity",
+    "windspeed",
+    "is_windspeed_zero"
+  ],
+  "all_feature_columns": [
+    "season",
+    "weather",
+    "year",
+    "month",
+    "day",
+    "hour",
+    "dayofweek",
+    "holiday",
+    "workingday",
+    "is_weekend",
+    "is_rush_hour",
+    "hour_sin",
+    "hour_cos",
+    "month_sin",
+    "month_cos",
+    "temp",
+    "atemp",
+    "humidity",
+    "windspeed",
+    "is_windspeed_zero"
+  ],
+  "target_column": "count",
+  "dropped_leakage_columns": [
+    "casual",
+    "registered"
+  ],
+  "sensor_fixes": {
+    "humidity_zero_imputed_causal": 22
+  }
+}

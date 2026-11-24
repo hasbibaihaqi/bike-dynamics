@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+{% set best = scenario_data.best_scenario %}
+
+<!-- Rekomendasi Skenario Terbaik -->
+<div class="alert alert-success border-success border-opacity-50 shadow-sm mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div>
+            <div class="small text-uppercase fw-bold text-success"><i class="bi bi-award-fill me-1"></i> Skenario Kebijakan Terbaik</div>
+            <h5 class="fw-bold mb-1">{{ best.scenario_name }} (Skor Komposit: {{ best.composite_score }}/100)</h5>
+            <p class="mb-0 small">{{ best.rationale }}</p>
+        </div>
+        <span class="badge text-bg-success fs-6 px-3 py-2">Service Level: {{ best.service_level_pct }}%</span>
+    </div>
+</div>
+
+<!-- Tabel Perbandingan 5 Skenario -->
+<div class="card-modern p-3 mb-4">
+    <h6 class="fw-bold mb-3"><i class="bi bi-table text-primary me-1"></i> Tabel Perbandingan Kinerja 5 Skenario Kebijakan ({{ scenario_data.horizon_hours }} Jam)</h6>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle small">
+            <thead class="table-light">
+                <tr>
+                    <th>Skenario</th>
+                    <th>Deskripsi Kebijakan</th>
+                    <th>Total Permintaan</th>
+                    <th>Total Penyewaan</th>
+                    <th>Unmet Demand</th>
+                    <th>Service Level</th>
+                    <th>Rata2 Tersedia</th>
+                    <th>Rata2 Utilisasi</th>
+                    <th>Rata2 Perawatan</th>
+                    <th>Skor Komposit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sc in scenario_data.scenarios %}
+                {% set sm = sc.summary %}
+                <tr class="{% if sc.scenario_id == best.scenario_id %}table-success fw-semibold{% endif %}">
+                    <td>{{ sc.scenario_name }}</td>
+                    <td class="text-muted">{{ sc.description }}</td>
+                    <td>{{ "%.0f"|format(sm.total_demand) }}</td>
+                    <td>{{ "%.0f"|format(sm.total_rentals) }}</td>
+                    <td class="text-danger fw-semibold">{{ "%.1f"|format(sm.total_unmet_demand) }}</td>
+                    <td>{{ sm.service_level_pct }}%</td>
+                    <td>{{ "%.1f"|format(sm.avg_available_bikes) }}</td>
+                    <td>{{ sm.avg_utilization_pct }}%</td>
+                    <td>{{ "%.1f"|format(sm.avg_maintenance_bikes) }}</td>
+                    <td><span class="badge text-bg-primary">{{ sm.composite_score }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Grafik Perbandingan Skenario -->
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="card-modern p-3 h-100">
+            <h6 class="fw-bold mb-3">Perbandingan Total Penyewaan vs Unmet Demand</h6>
+            <div class="chart-container">
+                <canvas id="scenarioBarChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card-modern p-3 h-100">
+            <h6 class="fw-bold mb-3">Dinamika Sepeda Tersedia (Available Bikes) Antar Skenario</h6>
+            <div class="chart-container">
+                <canvas id="scenarioAvailLineChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const scenarios = {{ scenario_data.scenarios | tojson }};
+const scLabels = scenarios.map(s => s.short_label);
+
+BikeCharts.createBarChart('scenarioBarChart', scLabels, [
+    {
+        label: 'Total Penyewaan Terpenuhi',
+        data: scenarios.map(s => s.summary.total_rentals),
+        backgroundColor: '#0284c7'
+    },
+    {
+        label: 'Permintaan Tidak Terpenuhi (Unmet)',
+        data: scenarios.map(s => s.summary.total_unmet_demand),
+        backgroundColor: '#e11d48'
+    }
+], 'Jumlah Sepeda');
+
+const timeLabels = scenarios[0].timeseries.map(r => r.datetime.slice(5, 16));
+const colors = ['#475569', '#e11d48', '#0284c7', '#0d9488', '#8b5cf6'];
+
+BikeCharts.createLineChart(
+    'scenarioAvailLineChart',
+    timeLabels,
+    scenarios.map((sc, idx) => ({
+        label: sc.short_label,
+        data: sc.timeseries.map(r => r.available_bikes),
+        borderColor: colors[idx % colors.length],
+        tension: 0.25,
+        pointRadius: 0
+    })),
+    'Sepeda Tersedia (Ba)'
+);
+</script>
+{% endblock %}

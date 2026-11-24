@@ -1,0 +1,47 @@
+# Virtual Environment & Python Cache
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# Local SQLite Database & Environment Secrets
+instance/*.db
+instance/*.sqlite
+instance/*.sqlite3
+.env
+.env.*
+!.env.example
+
+# Backup, Temporary & Archive Files
+backup_pre_fix/
+artifacts.zip
+*.tmp
+*.bak
+*.swp
+*.log
+
+# Large Non-Runtime ML Artifacts (reproducible via 03_model_training.ipynb)
+artifacts/candidate_models.joblib
+artifacts/best_model.joblib
+
+# Duplicate Compatibility Notebooks (identical SHA-256 to main notebooks 02, 03, 05, 06)
+notebooks/02_preprocessing.ipynb
+notebooks/03_train_demand_model.ipynb
+notebooks/05_system_dynamics.ipynb
+notebooks/06_scenario_experiments.ipynb
+
+# IDE & OS Files
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block content %}
+{% set s = active_run.summary %}
+{% set best = scenario_data.best_scenario %}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 no-print">
+    <div>
+        <span class="badge text-bg-dark">Laporan Run #{{ active_run.run_id }}</span>
+        <span class="fw-bold ms-1">{{ active_run.run_label }}</span>
+        <span class="text-muted small ms-2">Dibuat: {{ active_run.created_at }}</span>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('results.export_results_csv', run_id=active_run.run_id) }}" class="btn btn-sm btn-success fw-semibold">
+            <i class="bi bi-file-earmark-spreadsheet-fill me-1"></i> Ekspor CSV
+        </a>
+        <button onclick="window.print()" class="btn btn-sm btn-outline-dark">
+            <i class="bi bi-printer-fill me-1"></i> Cetak Ringkasan
+        </button>
+    </div>
+</div>
+
+<!-- Ringkasan Eksperimen -->
+<div class="card-modern p-3 mb-4">
+    <h6 class="fw-bold mb-2"><i class="bi bi-clipboard-data text-primary me-1"></i> Ringkasan Eksperimen &amp; Rekomendasi Kebijakan</h6>
+    <p class="small mb-2">
+        Pada simulasi <strong>{{ active_run.run_label }}</strong> selama <strong>{{ s.simulation_hours }} jam</strong> dengan kapasitas total <strong>{{ "%.0f"|format(s.total_fleet) }} sepeda</strong>,
+        total permintaan tercatat sebesar <strong>{{ "%.0f"|format(s.total_demand) }}</strong> unit dengan pemenuhan penyewaan aktual <strong>{{ "%.0f"|format(s.total_rentals) }}</strong> unit
+        (<em>Service Level</em> <strong>{{ s.service_level_pct }}%</strong>) dan permintaan tidak terpenuhi sebesar <strong>{{ "%.1f"|format(s.total_unmet_demand) }}</strong> unit.
+    </p>
+    <p class="small mb-0 text-success fw-semibold">
+        Rekomendasi Lintas Skenario: {{ best.rationale }}
+    </p>
+</div>
+
+<!-- Grafik Hasil Simulasi -->
+<div class="card-modern p-3 mb-4">
+    <h6 class="fw-bold mb-3"><i class="bi bi-graph-up text-primary me-1"></i> Grafik Deret Waktu Hasil Simulasi</h6>
+    <div class="chart-container">
+        <canvas id="resultsReportChart"></canvas>
+    </div>
+</div>
+
+<!-- Perbandingan Skenario & Riwayat Run -->
+<div class="row g-3 mb-4">
+    <div class="col-lg-7">
+        <div class="card-modern p-3 h-100">
+            <h6 class="fw-bold mb-3">Ringkasan Perbandingan Skenario</h6>
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle small">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Skenario</th>
+                            <th>Total Sewa</th>
+                            <th>Unmet Demand</th>
+                            <th>Service Level</th>
+                            <th>Skor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sc in scenario_data.scenarios %}
+                        <tr>
+                            <td class="fw-semibold">{{ sc.short_label }}</td>
+                            <td>{{ "%.0f"|format(sc.summary.total_rentals) }}</td>
+                            <td class="text-danger">{{ "%.1f"|format(sc.summary.total_unmet_demand) }}</td>
+                            <td>{{ sc.summary.service_level_pct }}%</td>
+                            <td><span class="badge text-bg-primary">{{ sc.summary.composite_score }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5 no-print">
+        <div class="card-modern p-3 h-100">
+            <h6 class="fw-bold mb-3">Riwayat Simulasi Tersimpan (SQLite)</h6>
+            <div class="table-responsive table-scroll" style="max-height: 220px;">
+                <table class="table table-sm table-hover align-middle small">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Label</th>
+                            <th>Service</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for h in history_runs %}
+                        <tr class="{% if h.run_id == active_run.run_id %}table-info{% endif %}">
+                            <td>#{{ h.run_id }}</td>
+                            <td>{{ h.run_label }}</td>
+                            <td>{{ h.summary.service_level_pct }}%</td>
+                            <td>
+                                <a href="{{ url_for('results.results_and_reports', run_id=h.run_id) }}" class="btn btn-xs btn-outline-primary py-0 px-2 small">Lihat</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabel Detail Per Jam -->
+<div class="card-modern p-3">
+    <h6 class="fw-bold mb-3"><i class="bi bi-table text-secondary me-1"></i> Tabel Hasil Simulasi per Jam (24 Jam Pertama)</h6>
+    <div class="table-responsive table-scroll">
+        <table class="table table-sm table-striped align-middle small">
+            <thead class="table-dark sticky-top">
+                <tr>
+                    <th>Jam</th>
+                    <th>Waktu</th>
+                    <th>Demand</th>
+                    <th>Rental</th>
+                    <th>Unmet</th>
+                    <th>Return</th>
+                    <th>Available (Ba)</th>
+                    <th>Rented (Br)</th>
+                    <th>Maint. (Bm)</th>
+                    <th>Utilisasi (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in active_run.timeseries[:24] %}
+                <tr>
+                    <td>{{ row.step + 1 }}</td>
+                    <td>{{ row.datetime }}</td>
+                    <td>{{ row.demand_rate }}</td>
+                    <td>{{ row.rental_rate }}</td>
+                    <td class="text-danger">{{ row.unmet_demand }}</td>
+                    <td>{{ row.return_rate }}</td>
+                    <td class="fw-semibold text-success">{{ row.available_bikes }}</td>
+                    <td class="fw-semibold text-primary">{{ row.rented_bikes }}</td>
+                    <td>{{ row.maintenance_bikes }}</td>
+                    <td>{{ row.utilization_pct }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const repTs = {{ active_run.timeseries | tojson }};
+BikeCharts.createLineChart(
+    'resultsReportChart',
+    repTs.map(r => r.datetime.slice(5, 16)),
+    [
+        {
+            label: 'Available Bikes (Ba)',
+            data: repTs.map(r => r.available_bikes),
+            borderColor: BikeCharts.palette.teal,
+            tension: 0.25,
+            pointRadius: 0
+        },
+        {
+            label: 'Rented Bikes (Br)',
+            data: repTs.map(r => r.rented_bikes),
+            borderColor: BikeCharts.palette.blue,
+            tension: 0.25,
+            pointRadius: 0
+        },
+        {
+            label: 'Unmet Demand',
+            data: repTs.map(r => r.unmet_demand),
+            borderColor: BikeCharts.palette.rose,
+            tension: 0.25,
+            pointRadius: 0
+        }
+    ],
+    'Jumlah Sepeda'
+);
+</script>
+{% endblock %}

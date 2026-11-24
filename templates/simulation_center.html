@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block content %}
+{% set p = simulation_run.parameters %}
+{% set s = simulation_run.summary %}
+
+<div class="row g-3 mb-4">
+    <!-- Form Parameter Simulasi -->
+    <div class="col-lg-4">
+        <div class="card-modern p-3 h-100">
+            <h6 class="fw-bold mb-2"><i class="bi bi-sliders text-primary me-1"></i> Parameter Simulasi Armada</h6>
+            <p class="text-muted small mb-3">Atur kapasitas armada, kondisi awal, dan parameter operasional lalu jalankan simulasi System Dynamics.</p>
+
+            {% if error_message %}
+            <div class="alert alert-danger small py-2">{{ error_message }}</div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('simulation.simulation_center') }}" class="row g-2 small">
+                <div class="col-12">
+                    <label class="form-label fw-semibold mb-1">Label Eksperimen Simulasi</label>
+                    <input type="text" name="run_label" class="form-control form-control-sm" value="{{ simulation_run.run_label }}" placeholder="Contoh: Uji Armada 700 Unit">
+                </div>
+                <div class="col-6">
+                    <label class="form-label fw-semibold mb-1">Total Armada (unit)</label>
+                    <input type="number" step="1" min="10" name="total_fleet" id="total_fleet" class="form-control form-control-sm" value="{{ p.total_fleet }}">
+                </div>
+                <div class="col-6">
+                    <label class="form-label fw-semibold mb-1">Sepeda Tersedia Awal</label>
+                    <input type="number" step="1" min="0" name="initial_available" id="initial_available" class="form-control form-control-sm" value="{{ p.initial_available }}">
+                </div>
+                <div class="col-6">
+                    <label class="form-label fw-semibold mb-1">Sepeda Perawatan Awal</label>
+                    <input type="number" step="1" min="0" name="initial_maintenance" id="initial_maintenance" class="form-control form-control-sm" value="{{ p.initial_maintenance }}">
+                </div>
+                <div class="col-6">
+                    <label class="form-label fw-semibold mb-1">Sepeda Disewa Awal (Auto)</label>
+                    <input type="number" step="1" min="0" name="initial_rented" id="initial_rented" class="form-control form-control-sm bg-light" value="{{ p.initial_rented }}" readonly>
+                </div>
+                <div class="col-6">
+                    <label class="form-label fw-semibold mb-1">Durasi Sewa (jam)</label>
+                    <input type="number" step="0.1" min="0.25" max="48" name="rental_duration_hours" class="form-control form-control-sm" value="{{ p.rental_duration_hours }}">
+                </div>
+                <div class="col-6">
+                    <label class="form-label fw-semibold mb-1">Tingkat Kerusakan (0 - 1)</label>
+                    <input type="number" step="0.01" min="0" max="1" name="damage_rate" class="form-control form-control-sm" value="{{ p.damage_rate }}">
+                </div>
+                <div class="col-6">
+                    <label class="form-label fw-semibold mb-1">Durasi Perbaikan (jam)</label>
+                    <input type="number" step="0.5" min="0.5" max="168" name="repair_duration_hours" class="form-control form-control-sm" value="{{ p.repair_duration_hours }}">
+                </div>
+                <div class="col-6">
+                    <label class="form-label fw-semibold mb-1">Perubahan Permintaan (x)</label>
+                    <input type="number" step="0.05" min="0.1" max="5" name="demand_multiplier" class="form-control form-control-sm" value="{{ p.demand_multiplier }}">
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-semibold mb-1">Periode Simulasi (jam)</label>
+                    <input type="number" step="24" min="1" max="720" name="simulation_hours" class="form-control form-control-sm" value="{{ p.simulation_hours }}">
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold py-2">
+                        <i class="bi bi-play-circle-fill me-1"></i> Jalankan Simulasi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hasil Simulasi -->
+    <div class="col-lg-8">
+        <div class="card-modern p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="fw-bold mb-0">Ringkasan Hasil Simulasi (#{{ simulation_run.run_id }} - {{ simulation_run.run_label }})</h6>
+                <span class="badge text-bg-success">Konservasi Armada: {{ 'Valid' if s.conservation_verified else 'Cek' }}</span>
+            </div>
+            <div class="row g-2 text-center mt-1">
+                <div class="col-4 col-md-2">
+                    <div class="border rounded p-2 bg-light">
+                        <div class="small text-muted">Total Permintaan</div>
+                        <div class="fw-bold">{{ "%.0f"|format(s.total_demand) }}</div>
+                    </div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="border rounded p-2 bg-light">
+                        <div class="small text-muted">Total Sewa</div>
+                        <div class="fw-bold text-primary">{{ "%.0f"|format(s.total_rentals) }}</div>
+                    </div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="border rounded p-2 bg-light">
+                        <div class="small text-muted">Unmet Demand</div>
+                        <div class="fw-bold text-danger">{{ "%.0f"|format(s.total_unmet_demand) }}</div>
+                    </div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="border rounded p-2 bg-light">
+                        <div class="small text-muted">Service Level</div>
+                        <div class="fw-bold text-success">{{ s.service_level_pct }}%</div>
+                    </div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="border rounded p-2 bg-light">
+                        <div class="small text-muted">Rata2 Tersedia</div>
+                        <div class="fw-bold">{{ "%.1f"|format(s.avg_available_bikes) }}</div>
+                    </div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <div class="border rounded p-2 bg-light">
+                        <div class="small text-muted">Rata2 Utilisasi</div>
+                        <div class="fw-bold">{{ s.avg_utilization_pct }}%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-modern p-3">
+            <h6 class="fw-bold mb-3"><i class="bi bi-graph-up text-teal me-1"></i> Grafik Dinamika Stock &amp; Aliran Sepeda</h6>
+            <div class="chart-container">
+                <canvas id="simCenterStockChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Sinkronisasi otomatis Sepeda Disewa Awal = Total Armada - Tersedia Awal - Perawatan Awal
+function syncInitialRented() {
+    const total = parseFloat(document.getElementById('total_fleet').value) || 0;
+    const avail = parseFloat(document.getElementById('initial_available').value) || 0;
+    const maint = parseFloat(document.getElementById('initial_maintenance').value) || 0;
+    const rented = Math.max(0, total - avail - maint);
+    document.getElementById('initial_rented').value = rented.toFixed(0);
+}
+['total_fleet', 'initial_available', 'initial_maintenance'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', syncInitialRented);
+});
+
+const simTs = {{ simulation_run.timeseries | tojson }};
+BikeCharts.createLineChart(
+    'simCenterStockChart',
+    simTs.map(r => r.datetime.slice(5, 16)),
+    [
+        {
+            label: 'Available Bikes (Ba)',
+            data: simTs.map(r => r.available_bikes),
+            borderColor: BikeCharts.palette.teal,
+            tension: 0.25,
+            pointRadius: 0
+        },
+        {
+            label: 'Rented Bikes (Br)',
+            data: simTs.map(r => r.rented_bikes),
+            borderColor: BikeCharts.palette.blue,
+            tension: 0.25,
+            pointRadius: 0
+        },
+        {
+            label: 'Maintenance Bikes (Bm)',
+            data: simTs.map(r => r.maintenance_bikes),
+            borderColor: BikeCharts.palette.amber,
+            tension: 0.25,
+            pointRadius: 0
+        },
+        {
+            label: 'Unmet Demand',
+            data: simTs.map(r => r.unmet_demand),
+            borderColor: BikeCharts.palette.rose,
+            borderDash: [4, 4],
+            tension: 0.25,
+            pointRadius: 0
+        }
+    ],
+    'Jumlah Sepeda'
+);
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{
+  "best_model_candidate": "Gradient Boosting Regressor",
+  "models": [
+    {
+      "Algorithm": "Linear Regression",
+      "MAE": 89.645,
+      "RMSE": 122.3129,
+      "R2": 0.684,
+      "RMSLE": 1.0106,
+      "Training_Time_Sec": 0.008
+    },
+    {
+      "Algorithm": "Decision Tree Regressor",
+      "MAE": 65.2975,
+      "RMSE": 98.1876,
+      "R2": 0.7964,
+      "RMSLE": 0.4535,
+      "Training_Time_Sec": 0.0358
+    },
+    {
+      "Algorithm": "Random Forest Regressor",
+      "MAE": 54.4776,
+      "RMSE": 83.6138,
+      "R2": 0.8523,
+      "RMSLE": 0.3579,
+      "Training_Time_Sec": 1.45
+    },
+    {
+      "Algorithm": "Gradient Boosting Regressor",
+      "MAE": 44.2477,
+      "RMSE": 65.6799,
+      "R2": 0.9089,
+      "RMSLE": 0.3812,
+      "Training_Time_Sec": 3.8719
+    }
+  ]
+}

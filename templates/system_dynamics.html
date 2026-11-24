@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row g-3 mb-4">
+    <!-- Causal Loop Diagram (CLD) -->
+    <div class="col-lg-6">
+        <div class="card-modern p-3 h-100">
+            <h6 class="fw-bold mb-2"><i class="bi bi-arrow-repeat text-primary me-1"></i> Causal Loop Diagram (CLD)</h6>
+            <p class="text-muted small mb-2">Struktur umpan balik penyeimbang (<em>Balancing Loops</em>) antara permintaan, ketersediaan, penyewaan, pengembalian, dan perawatan.</p>
+            <svg viewBox="0 0 620 340" class="w-100 border rounded bg-light p-2">
+                <defs>
+                    <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                        <path d="M0,0 L0,6 L8,3 z" fill="#0284c7" />
+                    </marker>
+                    <marker id="arrowRed" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                        <path d="M0,0 L0,6 L8,3 z" fill="#e11d48" />
+                    </marker>
+                </defs>
+                <!-- Nodes -->
+                <rect x="20" y="30" width="145" height="44" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+                <text x="92" y="56" text-anchor="middle" font-size="12" font-weight="bold" fill="#0f172a">Demand Rate (ML)</text>
+
+                <rect x="235" y="30" width="140" height="44" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+                <text x="305" y="56" text-anchor="middle" font-size="12" font-weight="bold" fill="#0f172a">Rental Rate R(t)</text>
+
+                <rect x="445" y="30" width="150" height="44" rx="8" fill="#ccfbf1" stroke="#0d9488" stroke-width="2"/>
+                <text x="520" y="56" text-anchor="middle" font-size="12" font-weight="bold" fill="#0f172a">Available Bikes Ba</text>
+
+                <rect x="445" y="155" width="150" height="44" rx="8" fill="#ccfbf1" stroke="#0d9488" stroke-width="2"/>
+                <text x="520" y="181" text-anchor="middle" font-size="12" font-weight="bold" fill="#0f172a">Rented Bikes Br</text>
+
+                <rect x="235" y="155" width="140" height="44" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+                <text x="305" y="181" text-anchor="middle" font-size="12" font-weight="bold" fill="#0f172a">Return Rate U(t)</text>
+
+                <rect x="20" y="155" width="145" height="44" rx="8" fill="#ffe4e6" stroke="#e11d48" stroke-width="2"/>
+                <text x="92" y="181" text-anchor="middle" font-size="12" font-weight="bold" fill="#0f172a">Unmet Demand</text>
+
+                <rect x="235" y="270" width="150" height="44" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+                <text x="310" y="296" text-anchor="middle" font-size="12" font-weight="bold" fill="#0f172a">Maintenance Bm</text>
+
+                <rect x="20" y="270" width="145" height="44" rx="8" fill="#f1f5f9" stroke="#475569" stroke-width="2"/>
+                <text x="92" y="296" text-anchor="middle" font-size="12" font-weight="bold" fill="#0f172a">Weather W(t)</text>
+
+                <!-- Links -->
+                <line x1="165" y1="52" x2="230" y2="52" stroke="#0284c7" stroke-width="2" marker-end="url(#arrowBlue)"/>
+                <text x="197" y="44" font-size="12" font-weight="bold" fill="#059669">(+)</text>
+
+                <line x1="445" y1="45" x2="380" y2="45" stroke="#0284c7" stroke-width="2" marker-end="url(#arrowBlue)"/>
+                <text x="412" y="38" font-size="12" font-weight="bold" fill="#059669">(+)</text>
+
+                <line x1="375" y1="62" x2="440" y2="62" stroke="#e11d48" stroke-width="2" marker-end="url(#arrowRed)"/>
+                <text x="412" y="76" font-size="12" font-weight="bold" fill="#e11d48">(-)</text>
+
+                <line x1="330" y1="74" x2="465" y2="150" stroke="#0284c7" stroke-width="2" marker-end="url(#arrowBlue)"/>
+                <text x="415" y="110" font-size="12" font-weight="bold" fill="#059669">(+)</text>
+
+                <line x1="445" y1="177" x2="380" y2="177" stroke="#0284c7" stroke-width="2" marker-end="url(#arrowBlue)"/>
+                <text x="412" y="170" font-size="12" font-weight="bold" fill="#059669">(+)</text>
+
+                <line x1="335" y1="155" x2="465" y2="78" stroke="#0284c7" stroke-width="2" marker-end="url(#arrowBlue)"/>
+                <text x="378" y="122" font-size="12" font-weight="bold" fill="#059669">(+)</text>
+
+                <line x1="92" y1="74" x2="92" y2="150" stroke="#0284c7" stroke-width="2" marker-end="url(#arrowBlue)"/>
+                <text x="74" y="115" font-size="12" font-weight="bold" fill="#059669">(+)</text>
+
+                <line x1="270" y1="74" x2="145" y2="150" stroke="#e11d48" stroke-width="2" marker-end="url(#arrowRed)"/>
+                <text x="195" y="110" font-size="12" font-weight="bold" fill="#e11d48">(-)</text>
+
+                <line x1="305" y1="199" x2="305" y2="265" stroke="#0284c7" stroke-width="2" marker-end="url(#arrowBlue)"/>
+                <text x="315" y="236" font-size="12" font-weight="bold" fill="#059669">(+ Mi)</text>
+
+                <line x1="385" y1="285" x2="540" y2="78" stroke="#0284c7" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrowBlue)"/>
+                <text x="495" y="245" font-size="12" font-weight="bold" fill="#059669">(+ Mo)</text>
+
+                <line x1="165" y1="292" x2="230" y2="292" stroke="#0284c7" stroke-width="2" marker-end="url(#arrowBlue)"/>
+                <text x="195" y="285" font-size="12" font-weight="bold" fill="#059669">(+)</text>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Stock and Flow Diagram (SFD) -->
+    <div class="col-lg-6">
+        <div class="card-modern p-3 h-100">
+            <h6 class="fw-bold mb-2"><i class="bi bi-diagram-3 text-teal me-1"></i> Stock and Flow Diagram (SFD)</h6>
+            <p class="text-muted small mb-2">Representasi akumulasi stok armada (kotak) dan laju aliran per jam (katup) yang menjaga konservasi total armada.</p>
+            <svg viewBox="0 0 620 340" class="w-100 border rounded bg-light p-2">
+                <defs>
+                    <marker id="flowArrow" markerWidth="9" markerHeight="9" refX="8" refY="3.5" orient="auto">
+                        <path d="M0,0 L0,7 L9,3.5 z" fill="#1e293b" />
+                    </marker>
+                </defs>
+                <!-- Stock 1: Available Bikes -->
+                <rect x="30" y="65" width="150" height="65" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2.5"/>
+                <text x="105" y="93" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e3a8a">Available Bikes</text>
+                <text x="105" y="113" text-anchor="middle" font-size="12" font-weight="bold" fill="#0f172a">[ Ba(t) ]</text>
+
+                <!-- Stock 2: Rented Bikes -->
+                <rect x="440" y="65" width="150" height="65" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2.5"/>
+                <text x="515" y="93" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e3a8a">Rented Bikes</text>
+                <text x="515" y="113" text-anchor="middle" font-size="12" font-weight="bold" fill="#0f172a">[ Br(t) ]</text>
+
+                <!-- Stock 3: Maintenance Bikes -->
+                <rect x="235" y="235" width="155" height="65" fill="#fef3c7" stroke="#b45309" stroke-width="2.5"/>
+                <text x="312" y="263" text-anchor="middle" font-size="12" font-weight="bold" fill="#78350f">Maintenance Bikes</text>
+                <text x="312" y="283" text-anchor="middle" font-size="12" font-weight="bold" fill="#0f172a">[ Bm(t) ]</text>
+
+                <!-- Flow 1: Rental Rate Ba -> Br -->
+                <line x1="180" y1="82" x2="435" y2="82" stroke="#1e293b" stroke-width="3" marker-end="url(#flowArrow)"/>
+                <polygon points="300,72 316,92 300,92 316,72" fill="#f59e0b" stroke="#0f172a" stroke-width="1.2"/>
+                <text x="308" y="62" text-anchor="middle" font-size="11" font-weight="bold" fill="#0f172a">Rental Rate R(t)</text>
+
+                <!-- Flow 2: Return Rate Br -> Ba -->
+                <line x1="440" y1="115" x2="185" y2="115" stroke="#1e293b" stroke-width="3" marker-end="url(#flowArrow)"/>
+                <polygon points="300,105 316,125 300,125 316,105" fill="#f59e0b" stroke="#0f172a" stroke-width="1.2"/>
+                <text x="308" y="142" text-anchor="middle" font-size="11" font-weight="bold" fill="#0f172a">Return Rate U(t)</text>
+
+                <!-- Flow 3: Maintenance Inflow -> Bm -->
+                <line x1="255" y1="120" x2="255" y2="230" stroke="#1e293b" stroke-width="3" marker-end="url(#flowArrow)"/>
+                <polygon points="246,172 264,186 246,186 264,172" fill="#f59e0b" stroke="#0f172a" stroke-width="1.2"/>
+                <text x="175" y="183" text-anchor="middle" font-size="11" font-weight="bold" fill="#b45309">Maint. Inflow Mi(t)</text>
+
+                <!-- Flow 4: Maintenance Outflow Bm -> Ba -->
+                <polyline points="235,268 105,268 105,135" fill="none" stroke="#1e293b" stroke-width="3" marker-end="url(#flowArrow)"/>
+                <polygon points="96,202 114,216 96,216 114,202" fill="#10b981" stroke="#0f172a" stroke-width="1.2"/>
+                <text x="105" y="292" text-anchor="middle" font-size="11" font-weight="bold" fill="#047857">Maint. Outflow Mo(t)</text>
+
+                <!-- Conservation badge -->
+                <rect x="425" y="242" width="175" height="48" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+                <text x="512" y="263" text-anchor="middle" font-size="11" font-weight="bold" fill="#065f46">Konservasi Armada:</text>
+                <text x="512" y="280" text-anchor="middle" font-size="11" fill="#065f46">Ba(t) + Br(t) + Bm(t) = B_total</text>
+            </svg>
+        </div>
+    </div>
+</div>
+
+<!-- Persamaan Matematis & Asumsi Penelitian -->
+<div class="row g-3 mb-4">
+    <div class="col-lg-7">
+        <div class="card-modern p-3 h-100">
+            <h6 class="fw-bold mb-3"><i class="bi bi-calculator-fill text-primary me-1"></i> Persamaan Matematis Model (&Delta;t = 1 jam)</h6>
+            <div class="d-flex flex-column gap-2">
+                {% for eq in model_doc.equations %}
+                <div>
+                    <div class="small fw-semibold text-muted mb-1">{{ eq.title }}</div>
+                    <div class="equation-box">{{ eq.latex }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card-modern p-3 h-100">
+            <h6 class="fw-bold mb-3"><i class="bi bi-journal-check text-amber me-1"></i> Parameter &amp; Asumsi Dasar Penelitian</h6>
+            <p class="small text-muted">Karena dataset Kaggle hanya mencatat permintaan agregat per jam (<code>count</code>), parameter operasional ditetapkan secara eksplisit dan diuji melalui analisis sensitivitas:</p>
+            <table class="table table-sm table-bordered small">
+                <tbody>
+                    <tr><th>Total Armada (B_total)</th><td>{{ model_doc.assumptions.total_fleet }} sepeda</td></tr>
+                    <tr><th>Sepeda Tersedia Awal Ba(0)</th><td>{{ model_doc.assumptions.initial_available }} sepeda</td></tr>
+                    <tr><th>Sepeda Disewa Awal Br(0)</th><td>{{ model_doc.assumptions.initial_rented }} sepeda</td></tr>
+                    <tr><th>Sepeda Perawatan Awal Bm(0)</th><td>{{ model_doc.assumptions.initial_maintenance }} sepeda</td></tr>
+                    <tr><th>Durasi Sewa Rata-rata (&tau;r)</th><td>{{ model_doc.assumptions.rental_duration_hours }} jam</td></tr>
+                    <tr><th>Tingkat Kerusakan Dasar (&alpha;d)</th><td>{{ (model_doc.assumptions.damage_rate * 100)|round(2) }}% per pengembalian</td></tr>
+                    <tr><th>Durasi Perbaikan (&tau;m)</th><td>{{ model_doc.assumptions.repair_duration_hours }} jam</td></tr>
+                    <tr><th>Pengali Kerusakan Cuaca</th><td>Cerah: 1.0x | Mendung: 1.1x | Hujan Ringan: 1.35x | Hujan Lebat: 1.6x</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Tabel Variabel Stock, Flow, Auxiliary -->
+<div class="card-modern p-3">
+    <h6 class="fw-bold mb-3"><i class="bi bi-list-ul text-primary me-1"></i> Daftar Variabel Stock, Flow, dan Auxiliary</h6>
+    <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle small">
+            <thead class="table-light">
+                <tr>
+                    <th>Tipe</th>
+                    <th>Nama Variabel</th>
+                    <th>Simbol</th>
+                    <th>Satuan</th>
+                    <th>Penjelasan</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for v in model_doc.stocks %}
+                <tr><td><span class="badge text-bg-primary">Stock</span></td><td class="fw-semibold">{{ v.name }}</td><td><code>{{ v.symbol }}</code></td><td>{{ v.unit }}</td><td>{{ v.description }}</td></tr>
+                {% endfor %}
+                {% for v in model_doc.flows %}
+                <tr><td><span class="badge text-bg-success">Flow</span></td><td class="fw-semibold">{{ v.name }}</td><td><code>{{ v.symbol }}</code></td><td>{{ v.unit }}</td><td>{{ v.description }}</td></tr>
+                {% endfor %}
+                {% for v in model_doc.auxiliaries %}
+                <tr><td><span class="badge text-bg-secondary">Auxiliary</span></td><td class="fw-semibold">{{ v.name }}</td><td><code>{{ v.symbol }}</code></td><td>{{ v.unit }}</td><td>{{ v.description }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

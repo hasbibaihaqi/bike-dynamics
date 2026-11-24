@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card-modern p-3 mb-4">
+    <form method="GET" action="{{ url_for('simulation.sensitivity_analysis') }}" class="row g-2 align-items-end">
+        <div class="col-md-5">
+            <label class="form-label fw-semibold small mb-1">Pilih Parameter Uji Sensitivitas</label>
+            <select name="parameter" class="form-select form-select-sm">
+                {% for key, label in sensitivity_data.available_parameters.items() %}
+                <option value="{{ key }}" {% if key == sensitivity_data.parameter_name %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-semibold small mb-1">Horizon Simulasi (Jam)</label>
+            <input type="number" name="hours" min="24" max="720" step="24" class="form-control form-control-sm" value="{{ request.args.get('hours', 168) }}">
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary btn-sm w-100 fw-semibold">
+                <i class="bi bi-search"></i> Uji Sensitivitas
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="card-modern p-3 h-100">
+            <h6 class="fw-bold mb-3">Pengaruh {{ sensitivity_data.parameter_label }} terhadap Unmet Demand &amp; Perawatan</h6>
+            <div class="chart-container">
+                <canvas id="sensChart1"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card-modern p-3 h-100">
+            <h6 class="fw-bold mb-3">Pengaruh {{ sensitivity_data.parameter_label }} terhadap Service Level &amp; Utilisasi (%)</h6>
+            <div class="chart-container">
+                <canvas id="sensChart2"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card-modern p-3">
+            <h6 class="fw-bold mb-3">Tabel Hasil Uji Sensitivitas ({{ sensitivity_data.parameter_label }})</h6>
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered table-hover align-middle small">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Nilai Parameter ({{ sensitivity_data.unit }})</th>
+                            <th>Total Permintaan</th>
+                            <th>Total Penyewaan</th>
+                            <th>Unmet Demand</th>
+                            <th>Service Level (%)</th>
+                            <th>Rata2 Sepeda Tersedia</th>
+                            <th>Rata2 Utilisasi (%)</th>
+                            <th>Rata2 Perawatan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in sensitivity_data.results %}
+                        <tr>
+                            <td class="fw-bold">{{ r.parameter_value }}</td>
+                            <td>{{ "%.0f"|format(r.total_demand) }}</td>
+                            <td>{{ "%.0f"|format(r.total_rentals) }}</td>
+                            <td class="text-danger fw-semibold">{{ "%.1f"|format(r.total_unmet_demand) }}</td>
+                            <td class="text-success fw-semibold">{{ r.service_level_pct }}%</td>
+                            <td>{{ "%.1f"|format(r.avg_available_bikes) }}</td>
+                            <td>{{ r.avg_utilization_pct }}%</td>
+                            <td>{{ "%.1f"|format(r.avg_maintenance_bikes) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const sensRows = {{ sensitivity_data.results | tojson }};
+const sensLabels = sensRows.map(r => String(r.parameter_value));
+
+BikeCharts.createLineChart('sensChart1', sensLabels, [
+    {
+        label: 'Total Unmet Demand',
+        data: sensRows.map(r => r.total_unmet_demand),
+        borderColor: '#e11d48',
+        backgroundColor: 'rgba(225, 29, 72, 0.14)',
+        fill: true,
+        tension: 0.2
+    },
+    {
+        label: 'Rata-rata Sepeda Perawatan',
+        data: sensRows.map(r => r.avg_maintenance_bikes),
+        borderColor: '#d97706',
+        tension: 0.2
+    }
+], 'Jumlah Sepeda');
+
+BikeCharts.createLineChart('sensChart2', sensLabels, [
+    {
+        label: 'Service Level (%)',
+        data: sensRows.map(r => r.service_level_pct),
+        borderColor: '#059669',
+        tension: 0.2
+    },
+    {
+        label: 'Rata-rata Utilisasi Armada (%)',
+        data: sensRows.map(r => r.avg_utilization_pct),
+        borderColor: '#0284c7',
+        tension: 0.2
+    }
+], 'Persentase (%)');
+</script>
+{% endblock %}

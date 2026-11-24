@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card-modern kpi-card p-3 h-100">
+            <div class="kpi-label">Sumber Dataset</div>
+            <div class="fw-bold mt-1">{{ dataset_info.source_name }}</div>
+            <div class="kpi-sub mt-1">
+                Status Raw:
+                {% if dataset_info.raw_exists %}
+                <span class="badge text-bg-success">Tersedia</span>
+                {% else %}
+                <span class="badge text-bg-danger">Tidak Ditemukan</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-modern kpi-card teal p-3 h-100">
+            <div class="kpi-label">Status Preprocessing</div>
+            <div class="fw-bold mt-1">{{ dataset_info.preprocessing_status }}</div>
+            <div class="kpi-sub mt-1">Anti-leakage: kolom <code>casual</code> &amp; <code>registered</code> dihapus</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-modern kpi-card indigo p-3 h-100">
+            <div class="kpi-label">Dimensi Dataset Bersih</div>
+            <div class="kpi-value">{{ dataset_info.get('num_rows', 0) }} <small class="fs-6 fw-normal text-muted">baris</small> &times; {{ dataset_info.get('num_columns', 0) }} <small class="fs-6 fw-normal text-muted">kolom</small></div>
+            <div class="kpi-sub">Rentang: {{ dataset_info.eda_summary.get('time_range', {}).get('start', '-') }} s.d. {{ dataset_info.eda_summary.get('time_range', {}).get('end', '-') }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Preview Data -->
+<div class="card-modern p-3 mb-4">
+    <h6 class="fw-bold mb-3"><i class="bi bi-table text-primary me-1"></i> Preview Data Hasil Preprocessing (15 Baris Pertama)</h6>
+    <div class="table-responsive table-scroll">
+        <table class="table table-sm table-striped table-hover align-middle small">
+            <thead class="table-dark sticky-top">
+                <tr>
+                    {% for col in dataset_info.preview_columns %}
+                    <th>{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in dataset_info.preview_records %}
+                <tr>
+                    {% for col in dataset_info.preview_columns %}
+                    <td>{{ row[col] }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Statistik Deskriptif -->
+<div class="card-modern p-3">
+    <h6 class="fw-bold mb-3"><i class="bi bi-calculator text-teal me-1"></i> Statistik Deskriptif Dataset</h6>
+    <div class="table-responsive table-scroll">
+        <table class="table table-sm table-bordered table-hover align-middle small">
+            <thead class="table-light sticky-top">
+                <tr>
+                    <th>Fitur</th>
+                    <th>Count</th>
+                    <th>Mean</th>
+                    <th>Std</th>
+                    <th>Min</th>
+                    <th>25%</th>
+                    <th>50% (Median)</th>
+                    <th>75%</th>
+                    <th>Max</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in dataset_info.descriptive_stats %}
+                <tr>
+                    <td class="fw-semibold">{{ stat['feature'] }}</td>
+                    <td>{{ stat['count'] }}</td>
+                    <td>{{ stat['mean'] }}</td>
+                    <td>{{ stat['std'] }}</td>
+                    <td>{{ stat['min'] }}</td>
+                    <td>{{ stat['25%'] }}</td>
+                    <td>{{ stat['50%'] }}</td>
+                    <td>{{ stat['75%'] }}</td>
+                    <td>{{ stat['max'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

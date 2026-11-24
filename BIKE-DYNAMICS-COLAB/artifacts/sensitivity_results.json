@@ -1,0 +1,383 @@
+{
+  "generated_at": "2026-11-22T13:24:47.346423",
+  "horizon_hours": 168,
+  "elasticity_ranking": [
+    {
+      "Parameter": "Kapasitas Total Armada (Fleet Capacity)",
+      "Rentang Uji": "450.0 s.d. 825.0 Sepeda",
+      "Min Service Level (%)": 48.1,
+      "Max Service Level (%)": 75.91,
+      "Delta Service Level (%)": 27.81,
+      "Indeks Elastisitas (Abs)": 0.726
+    },
+    {
+      "Parameter": "Perubahan Permintaan (Demand Multiplier)",
+      "Rentang Uji": "0.8 s.d. 1.35 Pengali",
+      "Min Service Level (%)": 47.59,
+      "Max Service Level (%)": 71.77,
+      "Delta Service Level (%)": 24.18,
+      "Indeks Elastisitas (Abs)": 0.7173
+    },
+    {
+      "Parameter": "Durasi Sewa (Rental Duration)",
+      "Rentang Uji": "1.0 s.d. 3.0 Jam",
+      "Min Service Level (%)": 43.72,
+      "Max Service Level (%)": 70.05,
+      "Delta Service Level (%)": 26.33,
+      "Indeks Elastisitas (Abs)": 0.3222
+    },
+    {
+      "Parameter": "Tingkat Kerusakan (Damage Rate)",
+      "Rentang Uji": "0.01 s.d. 0.12 Fraksi",
+      "Min Service Level (%)": 54.63,
+      "Max Service Level (%)": 63.98,
+      "Delta Service Level (%)": 9.35,
+      "Indeks Elastisitas (Abs)": 0.0555
+    },
+    {
+      "Parameter": "Durasi Perbaikan (Repair Duration)",
+      "Rentang Uji": "2.0 s.d. 16.0 Jam",
+      "Min Service Level (%)": 56.42,
+      "Max Service Level (%)": 63.55,
+      "Delta Service Level (%)": 7.13,
+      "Indeks Elastisitas (Abs)": 0.0499
+    }
+  ],
+  "parameters": {
+    "fleet_capacity": {
+      "label": "Kapasitas Total Armada (Fleet Capacity)",
+      "unit": "Sepeda",
+      "base_val": 600.0,
+      "records": [
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 22210.23,
+          "total_unmet_demand": 23962.47,
+          "service_level_pct": 48.1,
+          "avg_available": 218.39,
+          "avg_maintenance": 33.3,
+          "avg_utilization_pct": 44.07,
+          "parameter_value": 450.0
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 25349.23,
+          "total_unmet_demand": 20823.47,
+          "service_level_pct": 54.9,
+          "avg_available": 260.57,
+          "avg_maintenance": 38.07,
+          "avg_utilization_pct": 43.12,
+          "parameter_value": 525.0
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 28300.08,
+          "total_unmet_demand": 17872.62,
+          "service_level_pct": 61.29,
+          "avg_available": 304.7,
+          "avg_maintenance": 42.57,
+          "avg_utilization_pct": 42.12,
+          "parameter_value": 600.0
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 30971.92,
+          "total_unmet_demand": 15200.78,
+          "service_level_pct": 67.08,
+          "avg_available": 351.73,
+          "avg_maintenance": 46.67,
+          "avg_utilization_pct": 40.98,
+          "parameter_value": 675.0
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 33137.22,
+          "total_unmet_demand": 13035.48,
+          "service_level_pct": 71.77,
+          "avg_available": 404.04,
+          "avg_maintenance": 50.0,
+          "avg_utilization_pct": 39.46,
+          "parameter_value": 750.0
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 35047.68,
+          "total_unmet_demand": 11125.02,
+          "service_level_pct": 75.91,
+          "avg_available": 459.01,
+          "avg_maintenance": 52.95,
+          "avg_utilization_pct": 37.94,
+          "parameter_value": 825.0
+        }
+      ]
+    },
+    "demand_multiplier": {
+      "label": "Perubahan Permintaan (Demand Multiplier)",
+      "unit": "Pengali",
+      "base_val": 1.0,
+      "records": [
+        {
+          "total_demand": 36938.16,
+          "total_rentals": 26509.78,
+          "total_unmet_demand": 10428.38,
+          "service_level_pct": 71.77,
+          "avg_available": 323.23,
+          "avg_maintenance": 40.0,
+          "avg_utilization_pct": 39.46,
+          "parameter_value": 0.8
+        },
+        {
+          "total_demand": 41555.43,
+          "total_rentals": 27619.99,
+          "total_unmet_demand": 13935.44,
+          "service_level_pct": 66.47,
+          "avg_available": 311.72,
+          "avg_maintenance": 41.61,
+          "avg_utilization_pct": 41.11,
+          "parameter_value": 0.9
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 28300.08,
+          "total_unmet_demand": 17872.62,
+          "service_level_pct": 61.29,
+          "avg_available": 304.7,
+          "avg_maintenance": 42.57,
+          "avg_utilization_pct": 42.12,
+          "parameter_value": 1.0
+        },
+        {
+          "total_demand": 50789.97,
+          "total_rentals": 28799.08,
+          "total_unmet_demand": 21990.89,
+          "service_level_pct": 56.7,
+          "avg_available": 299.56,
+          "avg_maintenance": 43.27,
+          "avg_utilization_pct": 42.86,
+          "parameter_value": 1.1
+        },
+        {
+          "total_demand": 55407.24,
+          "total_rentals": 29181.76,
+          "total_unmet_demand": 26225.48,
+          "service_level_pct": 52.67,
+          "avg_available": 295.62,
+          "avg_maintenance": 43.8,
+          "avg_utilization_pct": 43.43,
+          "parameter_value": 1.2
+        },
+        {
+          "total_demand": 62333.14,
+          "total_rentals": 29661.57,
+          "total_unmet_demand": 32671.58,
+          "service_level_pct": 47.59,
+          "avg_available": 290.69,
+          "avg_maintenance": 44.47,
+          "avg_utilization_pct": 44.14,
+          "parameter_value": 1.35
+        }
+      ]
+    },
+    "repair_duration": {
+      "label": "Durasi Perbaikan (Repair Duration)",
+      "unit": "Jam",
+      "base_val": 6.0,
+      "records": [
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 29341.43,
+          "total_unmet_demand": 16831.27,
+          "service_level_pct": 63.55,
+          "avg_available": 323.05,
+          "avg_maintenance": 14.93,
+          "avg_utilization_pct": 43.67,
+          "parameter_value": 2.0
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 29065.57,
+          "total_unmet_demand": 17107.13,
+          "service_level_pct": 62.95,
+          "avg_available": 318.27,
+          "avg_maintenance": 22.17,
+          "avg_utilization_pct": 43.26,
+          "parameter_value": 3.0
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 28801.52,
+          "total_unmet_demand": 17371.18,
+          "service_level_pct": 62.38,
+          "avg_available": 313.61,
+          "avg_maintenance": 29.19,
+          "avg_utilization_pct": 42.87,
+          "parameter_value": 4.0
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 28300.08,
+          "total_unmet_demand": 17872.62,
+          "service_level_pct": 61.29,
+          "avg_available": 304.7,
+          "avg_maintenance": 42.57,
+          "avg_utilization_pct": 42.12,
+          "parameter_value": 6.0
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 27362.38,
+          "total_unmet_demand": 18810.32,
+          "service_level_pct": 59.26,
+          "avg_available": 288.71,
+          "avg_maintenance": 66.94,
+          "avg_utilization_pct": 40.73,
+          "parameter_value": 10.0
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 26048.84,
+          "total_unmet_demand": 20123.86,
+          "service_level_pct": 56.42,
+          "avg_available": 269.16,
+          "avg_maintenance": 98.21,
+          "avg_utilization_pct": 38.77,
+          "parameter_value": 16.0
+        }
+      ]
+    },
+    "damage_rate": {
+      "label": "Tingkat Kerusakan (Damage Rate)",
+      "unit": "Fraksi",
+      "base_val": 0.04,
+      "records": [
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 29539.92,
+          "total_unmet_demand": 16632.78,
+          "service_level_pct": 63.98,
+          "avg_available": 324.43,
+          "avg_maintenance": 11.77,
+          "avg_utilization_pct": 43.97,
+          "parameter_value": 0.01
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 29127.53,
+          "total_unmet_demand": 17045.17,
+          "service_level_pct": 63.08,
+          "avg_available": 317.54,
+          "avg_maintenance": 22.34,
+          "avg_utilization_pct": 43.35,
+          "parameter_value": 0.02
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 28300.08,
+          "total_unmet_demand": 17872.62,
+          "service_level_pct": 61.29,
+          "avg_available": 304.7,
+          "avg_maintenance": 42.57,
+          "avg_utilization_pct": 42.12,
+          "parameter_value": 0.04
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 27505.76,
+          "total_unmet_demand": 18666.94,
+          "service_level_pct": 59.57,
+          "avg_available": 292.72,
+          "avg_maintenance": 61.64,
+          "avg_utilization_pct": 40.94,
+          "parameter_value": 0.06
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 26712.88,
+          "total_unmet_demand": 19459.82,
+          "service_level_pct": 57.85,
+          "avg_available": 281.89,
+          "avg_maintenance": 79.55,
+          "avg_utilization_pct": 39.76,
+          "parameter_value": 0.08
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 25226.16,
+          "total_unmet_demand": 20946.54,
+          "service_level_pct": 54.63,
+          "avg_available": 262.42,
+          "avg_maintenance": 112.3,
+          "avg_utilization_pct": 37.55,
+          "parameter_value": 0.12
+        }
+      ]
+    },
+    "rental_duration": {
+      "label": "Durasi Sewa (Rental Duration)",
+      "unit": "Jam",
+      "base_val": 1.5,
+      "records": [
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 32342.05,
+          "total_unmet_demand": 13830.65,
+          "service_level_pct": 70.05,
+          "avg_available": 358.79,
+          "avg_maintenance": 48.7,
+          "avg_utilization_pct": 32.09,
+          "parameter_value": 1.0
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 30254.1,
+          "total_unmet_demand": 15918.6,
+          "service_level_pct": 65.52,
+          "avg_available": 329.31,
+          "avg_maintenance": 45.54,
+          "avg_utilization_pct": 37.53,
+          "parameter_value": 1.25
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 28300.08,
+          "total_unmet_demand": 17872.62,
+          "service_level_pct": 61.29,
+          "avg_available": 304.7,
+          "avg_maintenance": 42.57,
+          "avg_utilization_pct": 42.12,
+          "parameter_value": 1.5
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 24909.87,
+          "total_unmet_demand": 21262.83,
+          "service_level_pct": 53.95,
+          "avg_available": 266.18,
+          "avg_maintenance": 37.43,
+          "avg_utilization_pct": 49.4,
+          "parameter_value": 2.0
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 22277.89,
+          "total_unmet_demand": 23894.81,
+          "service_level_pct": 48.25,
+          "avg_available": 235.74,
+          "avg_maintenance": 33.45,
+          "avg_utilization_pct": 55.14,
+          "parameter_value": 2.5
+        },
+        {
+          "total_demand": 46172.7,
+          "total_rentals": 20188.61,
+          "total_unmet_demand": 25984.09,
+          "service_level_pct": 43.72,
+          "avg_available": 210.74,
+          "avg_maintenance": 30.3,
+          "avg_utilization_pct": 59.83,
+          "parameter_value": 3.0
+        }
+      ]
+    }
+  }
+}

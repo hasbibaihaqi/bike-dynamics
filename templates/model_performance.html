@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block content %}
+{% if not performance.available %}
+<div class="alert alert-warning">{{ performance.message }}</div>
+{% else %}
+{% set m = performance.metrics %}
+{% set best = m.best_metrics %}
+
+<!-- Kartu Metrik Model Terbaik -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card-modern kpi-card emerald p-3 h-100">
+            <div class="kpi-label">Model Terbaik (Hasil Evaluasi)</div>
+            <div class="h5 fw-bold text-success mt-1 mb-1">{{ m.best_model }}</div>
+            <div class="kpi-sub">{{ m.selection_criterion }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-2">
+        <div class="card-modern kpi-card p-3 h-100">
+            <div class="kpi-label">MAE</div>
+            <div class="kpi-value">{{ "%.2f"|format(best.MAE) }}</div>
+            <div class="kpi-sub">Mean Abs. Error</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-2">
+        <div class="card-modern kpi-card indigo p-3 h-100">
+            <div class="kpi-label">RMSE</div>
+            <div class="kpi-value">{{ "%.2f"|format(best.RMSE) }}</div>
+            <div class="kpi-sub">Root Mean Sq. Err</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-2">
+        <div class="card-modern kpi-card teal p-3 h-100">
+            <div class="kpi-label">R² Score</div>
+            <div class="kpi-value">{{ "%.4f"|format(best.R2) }}</div>
+            <div class="kpi-sub">Koef. Determinasi</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-2">
+        <div class="card-modern kpi-card amber p-3 h-100">
+            <div class="kpi-label">Waktu Training</div>
+            <div class="kpi-value">{{ best.Training_Time_Sec if best.Training_Time_Sec is not none else '-' }}<small class="fs-6 fw-normal">s</small></div>
+            <div class="kpi-sub">RMSLE: {{ "%.4f"|format(best.RMSLE) }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabel Perbandingan 4 Algoritma -->
+<div class="card-modern p-3 mb-4">
+    <h6 class="fw-bold mb-3"><i class="bi bi-trophy text-warning me-1"></i> Perbandingan Empiris Algoritma Machine Learning (Chronological Split)</h6>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Peringkat</th>
+                    <th>Algoritma</th>
+                    <th>MAE</th>
+                    <th>RMSE</th>
+                    <th>R² Score</th>
+                    <th>RMSLE</th>
+                    <th>Waktu Training (detik)</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in m.algorithms %}
+                <tr class="{% if row.Algorithm == m.best_model %}table-success fw-semibold{% endif %}">
+                    <td>#{{ row.Rank }}</td>
+                    <td>{{ row.Algorithm }}</td>
+                    <td>{{ "%.4f"|format(row.MAE) }}</td>
+                    <td>{{ "%.4f"|format(row.RMSE) }}</td>
+                    <td>{{ "%.4f"|format(row.R2) }}</td>
+                    <td>{{ "%.4f"|format(row.RMSLE) }}</td>
+                    <td>{{ row.Training_Time_Sec if row.Training_Time_Sec is not none else 'N/A' }}</td>
+                    <td>
+                        {% if row.Algorithm == m.best_model %}
+                        <span class="badge text-bg-success">Terpilih (Production)</span>
+                        {% else %}
+                        <span class="badge text-bg-secondary">Kandidat Uji</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Grafik Aktual vs Prediksi -->
+<div class="card-modern p-3">
+    <h6 class="fw-bold mb-2"><i class="bi bi-graph-up text-primary me-1"></i> Grafik Prediksi vs Nilai Aktual pada Data Uji Kronologis</h6>
+    <p class="text-muted small mb-3">Perbandingan langsung antara nilai aktual dataset (`count`) dengan hasil prediksi model terbaik ({{ m.best_model }}).</p>
+    <div class="chart-container-lg">
+        <canvas id="actualVsPredChart"></canvas>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if performance.available %}
+<script>
+const chartSeries = {{ performance.chart_series | tojson }};
+BikeCharts.createLineChart(
+    'actualVsPredChart',
+    chartSeries.timestamps.map(t => t.slice(5, 16)),
+    [
+        {
+            label: 'Nilai Aktual (count)',
+            data: chartSeries.actual,
+            borderColor: '#0f172a',
+            borderWidth: 2,
+            tension: 0.2,
+            pointRadius: 0
+        },
+        {
+            label: 'Prediksi Model Terbaik',
+            data: chartSeries.predicted,
+            borderColor: '#0284c7',
+            borderDash: [5, 4],
+            borderWidth: 2,
+            tension: 0.2,
+            pointRadius: 0
+        }
+    ],
+    'Jumlah Penyewaan Sepeda'
+);
+</script>
+{% endif %}
+{% endblock %}
